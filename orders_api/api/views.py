@@ -1,15 +1,23 @@
+from distutils.util import strtobool
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.validators import URLValidator
+from django.db.models import Q
+from requests import get
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from yaml import load as load_yaml, Loader
 
-from api.serializers import UserSerializer, ContactSerializer
+from api.serializers import UserSerializer, ContactSerializer, ShopSerializer, CategorySerializer, \
+    ProductSerializer
 # from api.signals import new_user_registered
-from api.models import ConfirmEmailToken, Contact
+from api.models import ConfirmEmailToken, Contact, Shop, Category, Product, Parameter, ProductParameter
 
 
 class RegisterAccount(APIView):
@@ -170,7 +178,7 @@ class ContactView(APIView):
                     {'Status': False, 'Error': f"Контакта с ID={request.data['id']} не существует."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            serializer = ContactSerializer(contact, data=request.data)
+            serializer = ContactSerializer(contact, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({'Status': True}, status=status.HTTP_200_OK)
@@ -208,4 +216,131 @@ class ContactView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
+class PartnerUpdate(APIView):
+    """
+    Класс для обновления прайса от поставщика
+    """
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'Status': False, 'Error': 'Log in required'}, status=status.HTTP_403_FORBIDDEN)
+
+        if request.user.type != 'shop':
+            return Response({'Status': False, 'Error': 'Только для магазинов'}, status=status.HTTP_403_FORBIDDEN)
+
+        url = request.data.get('url')
+        if url:
+            validate_url = URLValidator()
+            try:
+                validate_url(url)
+            except ValidationError as e:
+                return Response({'Status': False, 'Error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                stream = get(url).content
+
+                data = load_yaml(stream, Loader=Loader)
+
+                shop, _ = Shop.objects.get_or_create(user_id=request.user.id,
+                                                     defaults={'name': data['shop'], 'url': url})
+                for category in data['categories']:
+                    category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
+                    category_object.shops.add(shop.id)
+                    category_object.save()
+                Product.objects.filter(shop_id=shop.id).delete()
+                for item in data['goods']:
+                    product = Product.objects.create(name=item['name'],
+                                                     category_id=item['category'],
+                                                     model=item['model'],
+                                                     external_id=item['id'],
+                                                     shop_id=shop.id,
+                                                     quantity=item['quantity'],
+                                                     price=item['price'],
+                                                     price_rrc=item['price_rrc'])
+                    for name, value in item['parameters'].items():
+                        parameter, _ = Parameter.objects.get_or_create(name=name)
+                        ProductParameter.objects.create(product_id=product.id,
+                                                        parameter_id=parameter.id,
+                                                        value=value)
+                return Response({'Status': True})
+
+        return Response({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
+class PartnerState(APIView):
+    """
+    Класс для работы со статусом поставщика
+    """
+    # Получить текущий статус получения заказов у магазина
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'Status': False, 'Error': 'Login required'}, status=status.HTTP_403_FORBIDDEN)
+
+        if request.user.type != 'shop':
+            return Response({'Status': False, 'Error': 'Только для магазинов'}, status=status.HTTP_403_FORBIDDEN)
+
+        shop = request.user.shop
+        serializer = ShopSerializer(shop)
+        return Response(serializer.data)
+
+    # Изменить текущий статус получения заказов у магазина
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'Status': False, 'Error': 'Log in required'}, status=status.HTTP_403_FORBIDDEN)
+
+        if request.user.type != 'shop':
+            return Response({'Status': False, 'Error': 'Только для магазинов'}, status=status.HTTP_403_FORBIDDEN)
+
+        state = request.data.get('state')
+        if state:
+            try:
+                Shop.objects.filter(user_id=request.user.id).update(state=strtobool(state))
+                return Response({'Status': True})
+            except ValueError as error:
+                return Response({'Status': False, 'Errors': str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'Status': False, 'Errors': 'Не указан аргумент state.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShopView(ListAPIView):
+    """
+    Класс для просмотра списка магазинов
+    """
+    queryset = Shop.objects.filter(state=True)
+    serializer_class = ShopSerializer
+
+
+class CategoryView(ListAPIView):
+    """
+    Класс для просмотра категорий
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class ProductInfoView(APIView):
+    """
+    Класс для поиска товаров по выбранной категории во всех магазинах
+    """
+    def get(self, request, *args, **kwargs):
+
+        query = Q(shop__state=True)
+        shop_id = request.query_params.get('shop_id')
+        category_id = request.query_params.get('category_id')
+
+        if shop_id:
+            query = query & Q(shop_id=shop_id)
+
+        if category_id:
+            query = query & Q(category_id=category_id)
+
+        # фильтруем и отбрасываем дубликаты
+        queryset = Product.objects.filter(
+            query).select_related(
+            'shop', 'category').prefetch_related(
+            'product_parameters__parameter').distinct()
+
+        serializer = ProductSerializer(queryset, many=True)
+
+        return Response(serializer.data)
 
