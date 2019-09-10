@@ -1,3 +1,4 @@
+ujson==1.35
 PyYAML
 requests==2.22.0
 Django==2.2.4
