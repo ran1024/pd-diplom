@@ -77,7 +77,6 @@ class OrderModifySerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    # ordered_items = OrderItemProductSerializer(read_only=True, many=True)
     ordered_items = OrderItemSerializer(read_only=True, many=True)
 
     total_sum = serializers.IntegerField()
