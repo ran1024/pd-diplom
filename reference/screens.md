@@ -1,7 +1,5 @@
 # Точки входа API сервиса
 
-[Пример API Сервиса для магазина](https://github.com/A-Iskakov/netology_pd_diplom) 
-
 ### Вход
 Форма
  * поля

@@ -107,7 +107,7 @@ class Contact(models.Model):
         verbose_name_plural = "Список контактов пользователя"
 
     def __str__(self):
-        return f'{self.city} {self.street} {self.house}'
+        return f'{self.city}, ул.{self.street}, дом {self.house} ({self.phone})'
 
 
 class ConfirmEmailToken(models.Model):
@@ -177,7 +177,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = "Список продуктов"
-        ordering = ('-name',)
+        ordering = ('category', '-name')
         constraints = [
             models.UniqueConstraint(fields=['shop', 'category', 'external_id'], name='unique_product_info'),
         ]
@@ -212,6 +212,9 @@ class ProductParameter(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['product', 'parameter'], name='unique_product_parameter'),
         ]
+        
+    def __str__(self):
+        return f'{self.product} - {self.parameter} {self.value}'
 
 
 class Order(models.Model):
@@ -230,6 +233,7 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.created)
+        # return self.created
 
 
 class OrderItem(models.Model):

@@ -1,5 +1,6 @@
 ### Python ###
 .idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -10,3 +11,5 @@ env/
 
 ### Project specific ###
 settings_local.py
+/orders_api/api/migrations/
+/venv/
