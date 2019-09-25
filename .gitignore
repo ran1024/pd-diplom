@@ -11,5 +11,5 @@ env/
 
 ### Project specific ###
 settings_local.py
-/orders_api/api/migrations/
 /venv/
+/orders_api/api/migrations/

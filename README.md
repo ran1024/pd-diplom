@@ -55,3 +55,9 @@ $ python manage.py migrate
 
 3. Запустить приложение:
 $ python manage.py runserver
+
+4. Запустить сервер Redis:
+$ redis-server
+
+5. В каталоге проекта запустить Celery:
+$ celery worker -A orders --loglevel=debug --concurrency=4

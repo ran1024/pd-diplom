@@ -15,7 +15,6 @@ def password_reset_token_created(sender, instance, reset_password_token, **kwarg
     :param kwargs:
     :return:
     """
-    print('aaa-2')
     msg = EmailMultiAlternatives(
         # title:
         f"Password Reset Token for {reset_password_token.user}",

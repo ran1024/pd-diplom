@@ -20,6 +20,7 @@ from api.serializers import UserSerializer, ContactSerializer, ShopSerializer, C
     ProductSerializer, OrderItemSerializer, OrderSerializer, OrderModifySerializer
 from api.models import ConfirmEmailToken, Contact, Shop, Category, Product, Parameter, ProductParameter, \
     Order, OrderItem
+from .task import send_verification_email, send_change_order_email
 
 
 class RegisterAccount(APIView):
@@ -45,10 +46,8 @@ class RegisterAccount(APIView):
                     user.set_password(request.data['password'])
                     user.save()
                     token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user.id)
-                    user.email_user(f'Token для подтверждения регистрации пользователя {token.user.email}',
-                                    token.key,
-                                    from_email=settings.EMAIL_HOST_USER)
-                    # new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    # посылаем письмо с токеном для верификации (с помощью Celery)
+                    send_verification_email.delay(user.id)
                     return Response({'status': True})
                 else:
                     return Response({'status': False, 'error': user_serializer.errors},
@@ -262,6 +261,7 @@ class PartnerUpdate(APIView):
                     category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
                     category_object.shops.add(shop.id)
                     category_object.save()
+
                 Product.objects.filter(shop_id=shop.id).delete()
                 product_items = []
                 parameter_items = {}
@@ -525,9 +525,11 @@ class OrderView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 if is_updated:
-                    request.user.email_user(f'Обновление статуса заказа',
-                                            f'Заказ номер {request.data["id"]} сформирован',
-                                            from_email=settings.EMAIL_HOST_USER)
+                    # посылаем письмо об обновление статуса заказа (с помощью Celery)
+                    send_change_order_email.delay(request.user.email, request.data["id"])
+                    # request.user.email_user(f'Обновление статуса заказа',
+                    #                         f'Заказ номер {request.data["id"]} сформирован',
+                    #                         from_email=settings.EMAIL_HOST_USER)
                     return Response({'status': True})
 
         return Response({'status': False, 'error': 'Не указаны все необходимые аргументы'},
