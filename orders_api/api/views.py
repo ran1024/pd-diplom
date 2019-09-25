@@ -20,7 +20,7 @@ from api.serializers import UserSerializer, ContactSerializer, ShopSerializer, C
     ProductSerializer, OrderItemSerializer, OrderSerializer, OrderModifySerializer
 from api.models import ConfirmEmailToken, Contact, Shop, Category, Product, Parameter, ProductParameter, \
     Order, OrderItem
-from .task import send_verification_email, send_change_order_email
+from .task import send_verification_email, send_change_order_email, do_import
 
 
 class RegisterAccount(APIView):
@@ -216,23 +216,6 @@ class PartnerUpdate(APIView):
     """
     Класс для обновления прайса от поставщика
     """
-    def _import_product(self, product_data, shop_id):
-        product = Product(name=product_data['name'],
-                          category_id=product_data['category'],
-                          model=product_data['model'],
-                          external_id=product_data['id'],
-                          shop_id=shop_id,
-                          quantity=product_data['quantity'],
-                          price=product_data['price'],
-                          price_rrc=product_data['price_rrc'])
-        return product
-
-    def _import_parameter(self, parameter_list, items_dict, prod):
-        for key, value in items_dict[prod.external_id].items():
-            parameter_list.append(ProductParameter(product_id=prod.id,
-                                                   parameter_id=key,
-                                                   value=value))
-
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return Response({'status': False, 'error': 'Log in required'}, status=status.HTTP_403_FORBIDDEN)
@@ -257,28 +240,9 @@ class PartnerUpdate(APIView):
                 if shop.name != data['shop']:
                     return Response({'status': False, 'error': 'В прайсе указано некорректное название магазина!'},
                                     status=status.HTTP_400_BAD_REQUEST)
-                for category in data['categories']:
-                    category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
-                    category_object.shops.add(shop.id)
-                    category_object.save()
 
-                Product.objects.filter(shop_id=shop.id).delete()
-                product_items = []
-                parameter_items = {}
-                parameter_list = []
-                for item in data['goods']:
-                    product_items.append(self._import_product(item, shop.id))
-                    parameter_items[item['id']] = {}
-                    for name, value in item['parameters'].items():
-                        parameter, _ = Parameter.objects.get_or_create(name=name)
-                        parameter_items[item['id']].update({parameter.id: value})
-
-                list_of_products = Product.objects.bulk_create(product_items)
-
-                for product in list_of_products:
-                    self._import_parameter(parameter_list, parameter_items, product)
-
-                ProductParameter.objects.bulk_create(parameter_list)
+                # заносим прайс в базу асинхронно (с помощью Celery)
+                do_import.delay(data, shop.id)
 
                 return Response({'status': True})
 
@@ -527,9 +491,6 @@ class OrderView(APIView):
                 if is_updated:
                     # посылаем письмо об обновление статуса заказа (с помощью Celery)
                     send_change_order_email.delay(request.user.email, request.data["id"])
-                    # request.user.email_user(f'Обновление статуса заказа',
-                    #                         f'Заказ номер {request.data["id"]} сформирован',
-                    #                         from_email=settings.EMAIL_HOST_USER)
                     return Response({'status': True})
 
         return Response({'status': False, 'error': 'Не указаны все необходимые аргументы'},
