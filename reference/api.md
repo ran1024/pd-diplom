@@ -428,7 +428,7 @@ GET /api/v1/basket
             },
             {
                 "id": 9,
-                "prodict_name": "Смартфон Aple iPhone XS Max 512GB (золотистый)",
+                "prodict_name": "Смартфон Apple iPhone XS Max 512GB (золотистый)",
                 "external_id": 4216292,
                 "quantity": 4,
                 "price": 110000,
@@ -455,7 +455,7 @@ POST /api/v1/basket
     "token": "b39d0f93f9e895b82f1724832b7c186a",
     "items": [
         {
-            "prodict_name": "Смартфон Aple iPhone XS Max 512GB (золотистый)",
+            "product_name": "Смартфон Apple iPhone XS Max 512GB (золотистый)",
             "external_id": 4216292,
             "quantity": 4,
             "price": 110000,
@@ -667,7 +667,7 @@ GET /api/v1/partner/state
 ```
 
 
-#### Включить/выключить заказы
+#### Включить/выключить приём заказов магазином
 ```
 POST /api/v1/partner/state
 {

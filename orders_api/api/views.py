@@ -2,7 +2,6 @@ from distutils.util import strtobool
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
-from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import URLValidator
 from django.db import IntegrityError
@@ -13,11 +12,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
 from api.serializers import UserSerializer, ContactSerializer, ShopSerializer, CategorySerializer, \
-    ProductSerializer, OrderItemSerializer, OrderSerializer, OrderModifySerializer
+    ProductSerializer, OrderItemSerializer, OrderSerializer, OrderModifySerializer, OrderItemAddSerializer
 from api.models import ConfirmEmailToken, Contact, Shop, Category, Product, Parameter, ProductParameter, \
     Order, OrderItem
 from .task import send_verification_email, send_change_order_email, do_import
@@ -129,7 +127,7 @@ class AccountDetails(APIView):
         user_serializer = UserSerializer(request.user, data=request.data, partial=True)
         if user_serializer.is_valid():
             user_serializer.save()
-            return Response({'status': True}, status=status.HTTP_201_CREATED)
+            return Response({'status': True}, status=status.HTTP_200_OK)
         else:
             return Response({'status': False, 'error': user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -376,35 +374,29 @@ class BasketView(APIView):
         if not request.user.is_authenticated:
             return Response({'status': False, 'error': 'Вы не авторизовались!'}, status=status.HTTP_403_FORBIDDEN)
 
-        items_string = request.data.get('items')
-        if items_string:
-            try:
-                items = load_json(items_string)
-            except ValueError:
-                return Response({'status': False, 'error': 'Неверный формат запроса'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            else:
-                basket, _ = Order.objects.get_or_create(user_id=request.user.id, status='basket')
-                objects_created = 0
-                for order_item in items:
-                    order_item.update({'order': basket.id})
+        items = request.data.get('items')
+        if items:
+            basket, _ = Order.objects.get_or_create(user_id=request.user.id, status='basket')
+            objects_created = 0
+            for order_item in items:
+                order_item.update({'order': basket.id})
 
-                    product = Product.objects.filter(external_id=order_item['external_id']).values('category', 'shop')
-                    order_item.update({'category': product[0]['category'], 'shop': product[0]['shop']})
+                product = Product.objects.filter(external_id=order_item['external_id']).values('category', 'shop')
+                order_item.update({'category': product[0]['category'], 'shop': product[0]['shop']})
 
-                    serializer = OrderItemSerializer(data=order_item)
-                    if serializer.is_valid():
-                        try:
-                            serializer.save()
-                        except IntegrityError as error:
-                            return Response({'status': False, 'errors': str(error)},
-                                            status=status.HTTP_400_BAD_REQUEST)
-                        else:
-                            objects_created += 1
-                    else:
-                        return Response({'status': False, 'error': serializer.errors},
+                serializer = OrderItemAddSerializer(data=order_item)
+                if serializer.is_valid():
+                    try:
+                        serializer.save()
+                    except IntegrityError as error:
+                        return Response({'status': False, 'errors': str(error)},
                                         status=status.HTTP_400_BAD_REQUEST)
-                return Response({'status': True, 'num_objects': objects_created})
+                    else:
+                        objects_created += 1
+                else:
+                    return Response({'status': False, 'error': serializer.errors},
+                                    status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': True, 'num_objects': objects_created})
 
         return Response({'status': False, 'error': 'Не указаны все необходимые аргументы'},
                         status=status.HTTP_400_BAD_REQUEST)
@@ -414,22 +406,16 @@ class BasketView(APIView):
         if not request.user.is_authenticated:
             return Response({'status': False, 'error': 'Вы не авторизовались!'}, status=status.HTTP_403_FORBIDDEN)
 
-        items_sting = request.data.get('items')
-        if items_sting:
-            try:
-                items = load_json(items_sting)
-            except ValueError:
-                return Response({'status': False, 'error': 'Неверный формат запроса'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            else:
-                basket, _ = Order.objects.get_or_create(user_id=request.user.id, status='basket')
-                objects_updated = 0
-                for order_item in items:
-                    if isinstance(order_item['id'], int) and isinstance(order_item['quantity'], int):
-                        objects_updated += OrderItem.objects.filter(order_id=basket.id, id=order_item['id']).update(
-                            quantity=order_item['quantity'])
+        items = request.data.get('items')
+        if items:
+            basket, _ = Order.objects.get_or_create(user_id=request.user.id, status='basket')
+            objects_updated = 0
+            for order_item in items:
+                if isinstance(order_item['id'], int) and isinstance(order_item['quantity'], int):
+                    objects_updated += OrderItem.objects.filter(order_id=basket.id, id=order_item['id']).update(
+                        quantity=order_item['quantity'])
 
-                return Response({'status': True, 'num_objects': objects_updated})
+            return Response({'status': True, 'num_objects': objects_updated})
         return Response({'status': False, 'error': 'Не указаны все необходимые аргументы'},
                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -451,7 +437,7 @@ class BasketView(APIView):
 
             if objects_deleted:
                 deleted_count = OrderItem.objects.filter(query).delete()[0]
-                return Response({'status': True, 'num_objects': deleted_count})
+                return Response({'status': True, 'num_objects': deleted_count}, status=status.HTTP_204_NO_CONTENT)
         return Response({'status': False, 'error': 'Не указаны все необходимые аргументы'},
                         status=status.HTTP_400_BAD_REQUEST)
 

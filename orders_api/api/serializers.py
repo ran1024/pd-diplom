@@ -6,7 +6,7 @@ from api.models import User, Contact, Shop, Category, Product, ProductParameter,
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ('id', 'user_id', 'city', 'street', 'house', 'structure', 'building', 'apartment', 'phone')
+        fields = ('id', 'user', 'city', 'street', 'house', 'structure', 'building', 'apartment', 'phone')
         read_only_fields = ('id',)
         extra_kwargs = {
             'user': {'write_only': True}
@@ -54,6 +54,12 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'shop', 'name', 'category', 'external_id', 'model', 'quantity',
                   'price', 'price_rrc', 'product_parameters')
         read_only_fields = ('id',)
+
+
+class OrderItemAddSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ('product_name', 'external_id', 'quantity', 'price', 'total_amount', 'order', 'category', 'shop')
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

@@ -16,10 +16,10 @@ def send_verification_email(self, user_id):
     else:
         try:
             send_mail(
-                subject=f'Token для подтверждения регистрации пользователя {token[0].user.email}',
-                message=token[0].key,
+                subject=f'Token для подтверждения регистрации пользователя {token.user.email}',
+                message=token.key,
                 from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[token[0].user.email],
+                recipient_list=[token.user.email],
                 fail_silently=False
             )
         except smtplib.SMTPException as ex:
