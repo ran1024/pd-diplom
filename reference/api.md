@@ -74,10 +74,9 @@ GET /api/v1/user/contact
     }
 ]
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "Status": false,
-    "Errors": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -107,10 +106,9 @@ POST /api/v1/user/contact
     "Errors": "Не указаны все необходимые аргументы",   # или ошибки сериализатора.
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "Status": false,
-    "Errors": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -141,10 +139,9 @@ PUT /api/v1/user/contact
     "Errors": "описание возникшей ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "Status": false,
-    "Errors": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -168,10 +165,9 @@ DEL /api/v1/user/contact
     "Errors": "описание возникшей ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "Status": false,
-    "Errors": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -205,10 +201,9 @@ GET /api/v1/user/details
     ]
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "Status": false,
-    "Errors": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -237,10 +232,9 @@ POST /api/v1/user/details
     "Errors": "описание возникшей ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "Status": false,
-    "Errors": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -440,10 +434,9 @@ GET /api/v1/basket
     }
 ]
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -475,10 +468,9 @@ POST /api/v1/basket
     "error": "описание возникшей ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -506,10 +498,9 @@ PUT /api/v1/basket
     "error": "описание возникшей ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -534,10 +525,9 @@ DEL /api/v1/basket
     "error": "Не указаны все необходимые документы",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -579,10 +569,9 @@ GET /api/v1/order
     ]
 ]
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -607,10 +596,9 @@ POST /api/v1/order
     "error": "Не указаны все необходимые документы",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "Вы не авторизовались!",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -636,10 +624,9 @@ POST /api/v1/partner/update
     "error": "описание ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "описание ошибки",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -659,10 +646,9 @@ GET /api/v1/partner/state
     "url": "https://......"
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "описание ошибки",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -686,10 +672,9 @@ POST /api/v1/partner/state
     "error": "описание ошибки",
 }
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "описание ошибки",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
 
@@ -733,9 +718,8 @@ GET /api/v1/partner/order
     },
 ]
 
-403 FORBIDDEN
+401 UNAUTHORIZED
 {
-    "status": false,
-    "error": "описание ошибки",
+    "detail": "Учётные данные не были предоставлены.",
 }
 ```
