@@ -1,0 +1,1672 @@
+{
+	"info": {
+		"_postman_id": "d5719b49-62bb-4200-9173-d88086b9abbd",
+		"name": "pd-diplom",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Регистрация нового пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cf75977b-a209-40e3-af1a-dfcfed2ab5d1",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "Василий",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Пупкин",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "ran1024@yandex.ru",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "QrstUvw593",
+									"type": "text"
+								},
+								{
+									"key": "company",
+									"value": "Рога и Копыта",
+									"type": "text"
+								},
+								{
+									"key": "position",
+									"value": "Самый главный по закупкам",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/register",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Подтвердить регистрацию",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a75968fc-9b5d-47e1-a755-31debc6a8a95",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is Forbidden, response is json\", function () {",
+									"    pm.response.to.be.forbidden; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm registration status is False\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(false);",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "ran1024@yandex.ru",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "37b415999411c165b8",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/register/confirm",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"register",
+								"confirm"
+							]
+						},
+						"description": "Из присланного письма взять токен и вставить в запрос."
+					},
+					"response": []
+				},
+				{
+					"name": "Получить контакты пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aa510170-10eb-46df-b8bd-694c6adbfb06",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 403]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/contact",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создать контакт у пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5785db65-6d43-4246-9ed7-817d006b76a7",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is Created, response is json\", function () {",
+									"    pm.response.to.have.status(201); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "city",
+									"value": "Москва",
+									"type": "text"
+								},
+								{
+									"key": "street",
+									"value": "Моя улица имени кого-то",
+									"type": "text"
+								},
+								{
+									"key": "house",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "structure",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "building",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "apartment",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "+7 914 233 32 23",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/contact",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Редактировать контакт у пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5785db65-6d43-4246-9ed7-817d006b76a7",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.have.status(200); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Москва",
+									"type": "text"
+								},
+								{
+									"key": "street",
+									"value": "ул.Заблудившегося пешехода",
+									"type": "text"
+								},
+								{
+									"key": "house",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "structure",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "building",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "apartment",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "+7 914 233 32 23",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/contact",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить контакт у пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "21f947f5-2264-4765-9b38-4bedff56be71",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is NO CONENT, response is json\", function () {",
+									"    pm.response.to.have.status(204); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "items",
+									"value": "7",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/contact",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить все данные пользователя включая контакты",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "45b64de6-9222-44e0-ae9f-c1b5e3d21b6d",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/details",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Редактировать данные пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c1529ab1-f189-4215-9c40-e365a9812d2c",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.have.status(200); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "Алексей",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Петров",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "ran1024@narod.ru",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "QrstUvw593",
+									"type": "text"
+								},
+								{
+									"key": "company",
+									"value": "Всевидящее око",
+									"type": "text"
+								},
+								{
+									"key": "position",
+									"value": "Отец основатель",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/details",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Авторизация пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b1e097f1-b913-41f5-8b87-fa7f17294b52",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.have.status(200); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "ran1024@narod.ru",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "QrstUvw593",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/login",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Сброс пароля пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "674eaefc-773d-4bc7-b2b6-942b7c5d346f",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.have.status(200); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(\"OK\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "ran1024@narod.ru",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/password_reset",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"password_reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Подтверждение сброса пароля пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "17e0037e-a4fa-493b-a8bf-b1852a837d2d",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.have.status(200); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(\"OK\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "ran1024@narod.ru",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "QrstUvw593",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "2b0235aeef",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/user/password_reset/confirm",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"password_reset",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Пользователи торговой площадки.",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "partner",
+			"item": [
+				{
+					"name": "Обновить прайс поставщика",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a8ebd87-ee3b-4dce-a048-fe0ee567753d",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "https://raw.githubusercontent.com/ran1024/pd-diplom/master/data/shop1.yaml",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/partner/update",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"partner",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить статус магазина поставщика",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d16686b-dd81-4781-9a90-382dc3b8a879",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"State of shop is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.state).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/partner/state",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"partner",
+								"state"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Включить/выключить приём заказов магазином",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a83cc78-16c6-4ffd-8e6c-99bc99838101",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"State of shop is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "state",
+									"value": "on",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/partner/state",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"partner",
+								"state"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "получить сформированные заказы ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f47cd793-2274-4a17-bb90-8dc3248c4a52",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/partner/orders",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"partner",
+								"orders"
+							]
+						},
+						"description": "Магазин получает всю информацю о заказах."
+					},
+					"response": []
+				}
+			],
+			"description": "API для магазина.",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "shop",
+			"item": [
+				{
+					"name": "Получить список магазинов",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d04771d6-5d88-4a6b-9e70-6c4013e8bb90",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/shops",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить список категорий товаров",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d04771d6-5d88-4a6b-9e70-6c4013e8bb90",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товара по категории и/или по магазину",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e3939b6d-a091-4239-ae11-9849ede2b9d6",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/products?shop_id=1&category=224",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "shop_id",
+									"value": "1"
+								},
+								{
+									"key": "category",
+									"value": "224"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление товаров в корзину",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "77ed35b5-5d64-43f1-872d-aefc61d47a77",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"product_name\": \"Смартфон Samsung A10 (синий)\",\n            \"external_id\": 5432670,\n            \"quantity\": 20,\n            \"price\": 20000\n        }\n    ]\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/basket",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"basket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Редактировать количество товаров в корзине",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ddc1ae5-12e2-48ed-a494-0f1f9d680278",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"items\": [\n\t\t{\n\t\t\t\"id\": 24,\n\t\t\t\"quantity\": 10\n\t\t},\n\t\t{\n\t\t\t\"id\": 26,\n\t\t\t\"quantity\": 22\n\t\t}\n\t]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/basket",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"basket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить содержимое корзины",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "77ed35b5-5d64-43f1-872d-aefc61d47a77",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/basket",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"basket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить товары из корзины",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d8b463a3-46d1-4615-bc47-04068402a2cb",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is NO CONENT, response is json\", function () {",
+									"    pm.response.to.have.status(204); // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm update status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "items",
+									"value": "11,13",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/basket",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"basket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить все заказы покупателя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ff5581ee-be25-484f-9def-0e7af7d2974a",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/order",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Разместить заказ из корзины",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0ba0eadb-4f92-4cd0-a2ac-d57c743d33e6",
+								"exec": [
+									"// Тестируем статус ответа и формат",
+									"pm.test(\"Status is ok, response is json\", function () {",
+									"    pm.response.to.be.ok; // проверка статуса",
+									"    pm.response.to.be.json; // проверка формата",
+									"});",
+									"",
+									"pm.test(\"Confirm status is True\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Token 3100e906ecc1e04cfb0938e8baa5d404c3ffd9c4",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "contact",
+									"value": "6",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8000/api/v1/order",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "API для покупателей",
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
