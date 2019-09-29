@@ -1,0 +1,291 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: TODO
+paths:
+  /api/v1/order:
+    get:
+      operationId: ListOrders
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    post:
+      operationId: CreateOrder
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/basket:
+    get:
+      operationId: ListBaskets
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    post:
+      operationId: CreateBasket
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    put:
+      operationId: UpdateBasket
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    delete:
+      operationId: DestroyBasket
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/products:
+    get:
+      operationId: ListProducts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/categories:
+    get:
+      operationId: ListCategorys
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                - name
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 40
+  /api/v1/shops:
+    get:
+      operationId: ListShops
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                - name
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 50
+                  state:
+                    type: boolean
+                  url:
+                    type: string
+                    format: uri
+                    nullable: true
+                    maxLength: 200
+                    pattern: "^(?:[a-z0-9\\.\\-\\+]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:25[0-5]|2[0-4]\\\
+                      d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}|\\\
+                      [[0-9a-f:\\.]+\\]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1\
+                      -\uFFFF0-9])?(?:\\.(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\\
+                      .(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+                      .?|localhost))(?::\\d{2,5})?(?:[/?#][^\\s]*)?\\Z"
+  /api/v1/partner/state:
+    get:
+      operationId: ListPartnerStates
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    post:
+      operationId: CreatePartnerState
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/partner/orders:
+    get:
+      operationId: ListPartnerOrders
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/user/contact:
+    get:
+      operationId: ListContacts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    post:
+      operationId: CreateContact
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    put:
+      operationId: UpdateContact
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    delete:
+      operationId: DestroyContact
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/user/details:
+    get:
+      operationId: ListAccountDetails
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+    post:
+      operationId: CreateAccountDetails
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/partner/update:
+    post:
+      operationId: CreatePartnerUpdate
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/user/login:
+    post:
+      operationId: CreateLoginAccount
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/user/register:
+    post:
+      operationId: CreateRegisterAccount
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/user/register/confirm:
+    post:
+      operationId: CreateConfirmAccount
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+  /api/v1/user/password_reset:
+    post:
+      operationId: CreateEmail
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                - email
+                properties:
+                  email:
+                    type: string
+                    format: email
+  /api/v1/user/password_reset/confirm:
+    post:
+      operationId: CreatePasswordToken
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - password
+              - token
+              properties:
+                password:
+                  type: string
+                token:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                - password
+                - token
+                properties:
+                  password:
+                    type: string
+                  token:
+                    type: string

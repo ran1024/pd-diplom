@@ -26,6 +26,8 @@ class RegisterAccount(APIView):
     """
     Для регистрации покупателей
     """
+    throttle_scope = 'register'
+
     def post(self, request, *args, **kwargs):
         # проверяем обязательные аргументы
         if {'first_name', 'last_name', 'email', 'password', 'company', 'position'}.issubset(request.data):
@@ -202,6 +204,7 @@ class PartnerUpdate(APIView):
     Класс для обновления прайса от поставщика
     """
     permission_classes = [IsAuthenticated]
+    throttle_scope = 'change_price'
 
     def post(self, request, *args, **kwargs):
         if request.user.type != 'shop':
